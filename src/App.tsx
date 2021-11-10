@@ -50,7 +50,6 @@ function App() {
       .then(async charactersData => {
         const formatedCharacterResponse = await (formatResponse(charactersData.results))
         const fullyResolvedCharacterData = await Promise.all(formatedCharacterResponse)
-        console.log('Formatted Data', fullyResolvedCharacterData)
         setRickAndMontyInfo([...fullyResolvedCharacterData] as Array<RICK_MORTY_TYPE>)
         setPaginationInfo({ ...charactersData.info, page })
         setLoader(false);
@@ -62,7 +61,6 @@ function App() {
     const url = `https://rickandmortyapi.com/api/character?page=${page}`
     setLoader(true);
     setRickAndMontyInfo([])
-    console.log('Pagination Info', url)
     fetchCharacters(`${GET_CHARACTERS}?page=${page}`, page)
   }
 
