@@ -58,10 +58,9 @@ function App() {
   }
 
   const handlePagination = (event: React.ChangeEvent<unknown>, page: number) => {
-    const url = `https://rickandmortyapi.com/api/character?page=${page}`
     setLoader(true);
     setRickAndMontyInfo([])
-    fetchCharacters(url, page)
+    fetchCharacters(`${GET_CHARACTERS}?page=${page}`, page)
   }
 
   useEffect(() => {
