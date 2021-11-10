@@ -72,7 +72,8 @@ function App() {
     fetchCharacters(GET_CHARACTERS, 1)
     return () => {
       setRickAndMontyInfo([]);
-      setPaginationInfo({ count: 0, pages: 0, next: '', prev: '', page: 1 })
+      setPaginationInfo({ count: 0, pages: 0, next: '', prev: '', page: 1 });
+      setErrorMessage('')
     }
   }, [])
   return (
