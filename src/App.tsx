@@ -61,7 +61,7 @@ function App() {
     const url = `https://rickandmortyapi.com/api/character?page=${page}`
     setLoader(true);
     setRickAndMontyInfo([])
-    fetchCharacters(`${GET_CHARACTERS}?page=${page}`, page)
+    fetchCharacters(url, page)
   }
 
   useEffect(() => {
