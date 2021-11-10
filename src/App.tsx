@@ -30,7 +30,8 @@ const darkTheme = createTheme({ palette: { mode: 'dark' } });
 function App() {
   const [rickAndMontyInfo, setRickAndMontyInfo] = useState<RICK_MORTY_TYPE[]>([]);
   const [loader, setLoader] = useState<boolean>(false);
-  const [paginationInfo, setPaginationInfo] = useState<PAGINATION>({ count: 0, pages: 0, next: '', prev: '', page: 1 })
+  const [paginationInfo, setPaginationInfo] = useState<PAGINATION>({ count: 0, pages: 0, next: '', prev: '', page: 1 });
+  const [error,setErrorMessage] = useState<string>('');
 
   const handleExpandClick = (characterInfo: RICK_MORTY_TYPE) => {
     const { id } = characterInfo;
@@ -54,7 +55,10 @@ function App() {
         setPaginationInfo({ ...charactersData.info, page })
         setLoader(false);
       })
-      .catch(err => console.log('Error', err))
+      .catch(err => {
+        setLoader(false);
+        setErrorMessage(err?.message)
+      })
   }
 
   const handlePagination = (event: React.ChangeEvent<unknown>, page: number) => {
@@ -74,7 +78,9 @@ function App() {
   return (
     <div className="bodyBackground">
       <Box p={2}>
-        <Paper elevation={4} className="pagination">
+        {loader && <Box className="loader"><Typography variant="h1">Loading....</Typography></Box>}
+        {error && <Box className="loader"><Typography variant="h1">{error}</Typography></Box>}
+        {!error && <Paper elevation={4} className="pagination">
           <Pagination
             count={paginationInfo.pages}
             page={paginationInfo.page}
@@ -86,9 +92,9 @@ function App() {
             hidePrevButton
             disabled={loader}
           />
-        </Paper>
+        </Paper>}
         <Grid container spacing={3} mx={1}>
-          {loader && <Box className="loader"><Typography variant="h1">Loading....</Typography></Box>}
+         
           {rickAndMontyInfo?.map((characterInfo: RICK_MORTY_TYPE, index: number) => {
             const [name, species, status] = characterInfo?.meta;
             const [planetName, planetDimmension, planetType, count] = characterInfo?.originInfo;
