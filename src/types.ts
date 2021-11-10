@@ -1,9 +1,12 @@
+import { IconButtonProps } from '@mui/material/IconButton';
 export type RICK_MORTY_TYPE = {
     image: string,
     meta: Array<string>,
     originInfo: Array<string>,
     episodes: Array<string>,
-    [x: string]: Array<string> | string
+    expanded: boolean,
+    id: number,
+    // [x: string]: Array<string> | string | boolean,
 }
 
 export type CHARACTER = {
@@ -24,4 +27,16 @@ export type CHARACTER = {
 export type ORIGIN = {
     name: string,
     url: string
+}
+
+export interface ExpandMoreProps extends IconButtonProps {
+    expand: boolean;
+}
+
+export type PAGINATION = {
+    count: number,
+    pages: number,
+    next: string | null,
+    prev: string | null,
+    page:number
 }

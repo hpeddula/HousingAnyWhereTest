@@ -8,7 +8,7 @@ export const getOriginInfo = async (origin: ORIGIN): Promise<Array<string>> => {
         const originUrlData = await originResponse.json();
         // console.log('Got Origin Data', originUrlData, i + 1)
         const { dimension, type, residents } = originUrlData;
-        return [name, dimension, type, residents?.length]
+        return [name, dimension, type, `Resident Count : ${residents?.length}`]
     } else {
         return [name]
     }
@@ -31,10 +31,10 @@ export const getEpisodeNames = async (episodeInfo: Array<string>): Promise<Array
 
 export const formatResponse = async (response: CHARACTER[]): Promise<Promise<RICK_MORTY_TYPE>[]> => {
     console.log('Inside Format Response')
-    return response.map(async ({ image, name, species, status, origin, episode }: CHARACTER) => {
+    return response.map(async ({ id,image, name, species, status, origin, episode }: CHARACTER) => {
         const originData = await getOriginInfo(origin)
         const names = await getEpisodeNames(episode)
         console.log('Data from Inside Origin Method', [...originData])
-        return { image, meta: [name, species, status], originInfo: [...originData], episodes: names }
+        return { image, meta: [name, species, status], originInfo: [...originData], episodes: names,expanded:false,id }
     })
 }

@@ -4,66 +4,157 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { GET_CHARACTERS } from './constants';
 import { formatResponse } from './utils';
-import { RICK_MORTY_TYPE } from './types';
-import Header from './Header';
-// import { DataGrid } from '@mui/x-data-grid';
-// import Container from '@mui/material/Container';
+import { ExpandMoreProps, PAGINATION, RICK_MORTY_TYPE } from './types';
+import Paper from '@mui/material/Paper';
+import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import { Card, CardContent, Typography, Avatar, CardHeader, CardMedia, CardActions, Tooltip, Pagination } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
 
 
-const getRenderElement = (key: string, characterInfo: RICK_MORTY_TYPE): string | JSX.Element | string[] => {
-  return key === 'image' ? <img src={characterInfo[key] as string} alt="rickandmorty" /> : Array.isArray(characterInfo[key]) ? (characterInfo[key] as Array<string>).join(', ') : characterInfo[key]
-}
+const ExpandMore = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
+
+const darkTheme = createTheme({ palette: { mode: 'dark' } });
 
 function App() {
-  const [rickAndMontyInfo, setRickAndMontyInfo] = useState<RICK_MORTY_TYPE[]>([])
-  useEffect(() => {
-    fetch(GET_CHARACTERS)
+  const [rickAndMontyInfo, setRickAndMontyInfo] = useState<RICK_MORTY_TYPE[]>([]);
+  const [loader, setLoader] = useState<boolean>(false);
+  const [paginationInfo, setPaginationInfo] = useState<PAGINATION>({ count: 0, pages: 0, next: '', prev: '', page: 1 })
+
+  const handleExpandClick = (characterInfo: RICK_MORTY_TYPE) => {
+    const { id } = characterInfo;
+    let localDataCopy = [...rickAndMontyInfo];
+    let expandedCharacter = rickAndMontyInfo.find((char: RICK_MORTY_TYPE) => char.id === id);
+    let expandedCharacterIndex = rickAndMontyInfo.findIndex((char: RICK_MORTY_TYPE) => char.id === id);
+    if (expandedCharacter) {
+      expandedCharacter['expanded'] = !expandedCharacter['expanded']
+      localDataCopy[expandedCharacterIndex] = expandedCharacter
+      setRickAndMontyInfo([...localDataCopy])
+    }
+  };
+
+  const fetchCharacters = (url: string, page: number) => {
+    fetch(url)
       .then(response => response.json())
       .then(async charactersData => {
-        // console.log(data.results)
         const formatedCharacterResponse = await (formatResponse(charactersData.results))
         const fullyResolvedCharacterData = await Promise.all(formatedCharacterResponse)
         console.log('Formatted Data', fullyResolvedCharacterData)
         setRickAndMontyInfo([...fullyResolvedCharacterData] as Array<RICK_MORTY_TYPE>)
-        // setData({
-        //   rows: data.results.map(async ({ image, name, species, status, origin, episode }: any, i: any) => {
-        //     const orginalData = await getOriginInfo(origin)
-        //     console.log('Data from Origin Method',[...orginalData])
-        //     return { image, meta: [name, species, status], originInfo: [...orginalData], episode: episode[0] }
-        //   })
-        // })
+        setPaginationInfo({ ...charactersData.info, page })
+        setLoader(false);
       })
       .catch(err => console.log('Error', err))
-    return () => {
+  }
 
+  const handlePagination = (event: React.ChangeEvent<unknown>, page: number) => {
+    const url = `https://rickandmortyapi.com/api/character?page=${page}`
+    setLoader(true);
+    setRickAndMontyInfo([])
+    console.log('Pagination Info', url)
+    fetchCharacters(`${GET_CHARACTERS}?page=${page}`, page)
+  }
+
+  useEffect(() => {
+    setLoader(true);
+    fetchCharacters(GET_CHARACTERS, 1)
+    return () => {
+      setRickAndMontyInfo([]);
+      setPaginationInfo({ count: 0, pages: 0, next: '', prev: '', page: 1 })
     }
   }, [])
   return (
-    // <Box display={'flex'}  className={'bodyBackground'}>
-
-    // <div style={{ width: '100%' }}>
-    //   <div style={{ display: 'flex'}}>
-    //     <div style={{ flexGrow: 1 }}>
-    //       <DataGrid columns={Columns} rows={data.rows} disableColumnFilter />
-    //     </div>
-    //   </div>
-    // </div>
-
-    //  </Box>
-    <>
-      <Header />
+    <div className="bodyBackground">
       <Box p={2}>
-        <Grid container spacing={2}>
-          {rickAndMontyInfo?.map((characterInfo: RICK_MORTY_TYPE, index: number) => (
-            Object.keys(characterInfo).map((key: string) => (
-              <Grid item xs={3} key={`housingAnyWhere${index}`}>
-                {getRenderElement(key, characterInfo)}
+        <Paper elevation={4} className="pagination">
+          <Pagination
+            count={paginationInfo.pages}
+            page={paginationInfo.page}
+            color="primary"
+            onChange={handlePagination}
+            variant="outlined"
+            sx={{ display: 'flex', justifyContent: 'center' }}
+            hideNextButton
+            hidePrevButton
+            disabled={loader}
+          />
+        </Paper>
+        <Grid container spacing={3} mx={1}>
+          {loader && <Box className="loader"><Typography variant="h1">Loading....</Typography></Box>}
+          {rickAndMontyInfo?.map((characterInfo: RICK_MORTY_TYPE, index: number) => {
+            const [name, species, status] = characterInfo?.meta;
+            const [planetName, planetDimmension, planetType, count] = characterInfo?.originInfo;
+            return (
+              <Grid item key={index}>
+                <ThemeProvider theme={darkTheme}>
+                  <Paper elevation={6}>
+                    <Card sx={{ width: 400 }}>
+                      <CardHeader
+                        avatar={<Avatar
+                          alt="rickandmortyimages"
+                          src={characterInfo.image as string}
+                          sx={{ width: 56, height: 56 }}
+                        />}
+                        title={name}
+                      />
+                      <CardMedia
+                        component="img"
+                        image={characterInfo.image as string}
+                        alt="rickandmortyimages"
+                      />
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>Meta Information</Typography>
+                        <Typography variant="body2" component="div" gutterBottom>{`Character Name : ${name}`}</Typography>
+                        <Typography variant="body2" component="div" gutterBottom>{`Species : ${species}`}</Typography>
+                        <Typography variant="body2" component="div" gutterBottom>{`Status : ${status}`}</Typography>
+                        <Typography variant="h6" gutterBottom>Origin and Location Information</Typography>
+                        <Typography variant="body2" component="div" gutterBottom>{`Name : ${planetName}`}</Typography>
+                        {planetDimmension && <Typography variant="body2" component="div" gutterBottom>{`Dimension : ${planetDimmension}`}</Typography>}
+                        {planetType && <Typography variant="body2" component="div" gutterBottom>{`Type : ${planetType}`}</Typography>}
+                        {count && <Typography variant="body2" component="div" gutterBottom>{count}</Typography>}
+                        <CardActions>
+                          <ExpandMore
+                            expand={characterInfo.expanded}
+                            onClick={() => handleExpandClick(characterInfo)}
+                            aria-expanded={characterInfo.expanded}
+                            aria-label="show more"
+                          >
+                            <Tooltip title="Expand to see the episodes character has been invloved in">
+                              <ExpandMoreIcon />
+                            </Tooltip>
+                          </ExpandMore>
+                        </CardActions>
+                        {characterInfo.expanded && (
+                          <>
+                            <Typography variant="h5" gutterBottom>Episodes</Typography>
+                            <ol>
+                              {characterInfo.episodes.map((episode: string, index: number) => (
+                                <li key={`${episode}${index}`}><Typography variant="body2">{episode}</Typography></li>
+                              ))}
+                            </ol>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Paper>
+                </ThemeProvider>
               </Grid>
-            ))
-          ))}
+            )
+          })}
         </Grid>
       </Box>
-    </>
+    </div>
   );
 }
 
