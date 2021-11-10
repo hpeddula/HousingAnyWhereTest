@@ -79,7 +79,6 @@ function App() {
   return (
     <div className="bodyBackground">
       <Box p={2}>
-        {loader && <Box className="loader"><Typography variant="h1">Loading....</Typography></Box>}
         {error && <Box className="loader"><Typography variant="h1">{error}</Typography></Box>}
         {!error && <Paper elevation={4} className="pagination">
           <Pagination
@@ -95,7 +94,7 @@ function App() {
           />
         </Paper>}
         <Grid container spacing={3} mx={1}>
-         
+          {loader && <Box className="loader"><Typography variant="h1">Loading....</Typography></Box>}
           {rickAndMontyInfo?.map((characterInfo: RICK_MORTY_TYPE, index: number) => {
             const [name, species, status] = characterInfo?.meta;
             const [planetName, planetDimmension, planetType, count] = characterInfo?.originInfo;
