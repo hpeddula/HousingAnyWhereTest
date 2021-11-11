@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/HousingAnyWhereTest/static/css/main.c6bb1917.chunk.css",
+    "main.js": "/HousingAnyWhereTest/static/js/main.6e20b051.chunk.js",
+    "main.js.map": "/HousingAnyWhereTest/static/js/main.6e20b051.chunk.js.map",
+    "runtime-main.js": "/HousingAnyWhereTest/static/js/runtime-main.d15b246a.js",
+    "runtime-main.js.map": "/HousingAnyWhereTest/static/js/runtime-main.d15b246a.js.map",
+    "static/js/2.c16db9bf.chunk.js": "/HousingAnyWhereTest/static/js/2.c16db9bf.chunk.js",
+    "static/js/2.c16db9bf.chunk.js.map": "/HousingAnyWhereTest/static/js/2.c16db9bf.chunk.js.map",
+    "static/js/3.8a2dbf20.chunk.js": "/HousingAnyWhereTest/static/js/3.8a2dbf20.chunk.js",
+    "static/js/3.8a2dbf20.chunk.js.map": "/HousingAnyWhereTest/static/js/3.8a2dbf20.chunk.js.map",
+    "index.html": "/HousingAnyWhereTest/index.html",
+    "static/css/main.c6bb1917.chunk.css.map": "/HousingAnyWhereTest/static/css/main.c6bb1917.chunk.css.map",
+    "static/js/2.c16db9bf.chunk.js.LICENSE.txt": "/HousingAnyWhereTest/static/js/2.c16db9bf.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d15b246a.js",
+    "static/js/2.c16db9bf.chunk.js",
+    "static/css/main.c6bb1917.chunk.css",
+    "static/js/main.6e20b051.chunk.js"
+  ]
+}
