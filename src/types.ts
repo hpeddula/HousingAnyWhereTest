@@ -6,7 +6,6 @@ export type RICK_MORTY_TYPE = {
     episodes: Array<string>,
     expanded: boolean,
     id: number,
-    // [x: string]: Array<string> | string | boolean,
 }
 
 export type CHARACTER = {
