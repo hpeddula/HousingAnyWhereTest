@@ -33,6 +33,13 @@ function App() {
   const [paginationInfo, setPaginationInfo] = useState<PAGINATION>({ count: 0, pages: 0, next: '', prev: '', page: 1 });
   const [error,setErrorMessage] = useState<string>('');
 
+  /**
+   * Author : Harsha Peddula ,Date: 10-11-2021
+   * @param characterInfo 
+   * Function to handle the click of the expand toggle
+   * Finds the object along with the index from the available array
+   * if found toggles the expand state, other wise doesnot change the state
+   */
   const handleExpandClick = (characterInfo: RICK_MORTY_TYPE) => {
     const { id } = characterInfo;
     let localDataCopy = [...rickAndMontyInfo];
@@ -45,6 +52,12 @@ function App() {
     }
   };
 
+  /**
+   * Author : Harsha Peddula ,Date: 10-11-2021
+   * @param url 
+   * @param page 
+   * Function Used to fetch Character information
+   */
   const fetchCharacters = (url: string, page: number) => {
     fetch(url)
       .then(response => response.json())
@@ -61,6 +74,12 @@ function App() {
       })
   }
 
+  /**
+   * Author : Harsha Peddula ,Date: 10-11-2021
+   * @param event 
+   * @param page 
+   * Handles the pagination of characters
+   */
   const handlePagination = (event: React.ChangeEvent<unknown>, page: number) => {
     setLoader(true);
     setRickAndMontyInfo([])
